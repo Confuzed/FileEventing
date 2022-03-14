@@ -1,0 +1,36 @@
+﻿version: "3.9"
+
+services:
+  mq:
+    image: rabbitmq:3
+    hostname: mq
+    environment:
+      RABBITMQ_DEFAULT_USER: mrrabbit
+      RABBITMQ_DEFAULT_PASS: R@bbit-987!
+    restart: unless-stopped
+    
+  monitor:
+    build:
+      context: .
+      dockerfile: FileEventing.Monitor/Dockerfile
+    image: fileeventing-monitor:latest
+    depends_on:
+      - mq
+      - service
+    environment:
+      FILEEVENTING_BUS__HOST: mq
+      FILEEVENTING_BUS__USER: mrrabbit
+      FILEEVENTING_BUS__PASSWORD: R@bbit-987!
+      
+  
+  service:
+    build:
+      context: .
+      dockerfile: FileEventing.Service/Dockerfile
+    image: fileeventing-service:latest
+    depends_on:
+      - mq
+    environment:
+      FILEEVENTING_BUS__HOST: mq
+      FILEEVENTING_BUS__USER: mrrabbit
+      FILEEVENTING_BUS__PASSWORD: R@bbit-987!
