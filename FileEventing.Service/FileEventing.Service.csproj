@@ -19,6 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileEventing.Abstractions\FileEventing.Abstractions.csproj" />
+    <ProjectReference Include="..\FileEventing.Shared.Configuration\FileEventing.Shared.Configuration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configuration" />
   </ItemGroup>
 
 </Project>

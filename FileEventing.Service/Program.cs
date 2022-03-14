@@ -1,4 +1,4 @@
-﻿using FileEventing.Service.Configuration;
+﻿using FileEventing.Shared.Configuration;
 using FileEventing.Service.Logging;
 using MassTransit;
 using Microsoft.Extensions.Configuration;

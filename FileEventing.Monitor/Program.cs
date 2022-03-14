@@ -1,10 +1,9 @@
 ﻿using FileEventing.Monitor;
-using FileEventing.Monitor.Configuration;
+using FileEventing.Shared.Configuration;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 await Host.CreateDefaultBuilder(args)
     .ConfigureHostConfiguration(config =>
@@ -27,7 +26,7 @@ await Host.CreateDefaultBuilder(args)
 
         services.AddMassTransit(mt =>
         {
-            mt.UsingRabbitMq((ctx, mq) =>
+            mt.UsingRabbitMq((_, mq) =>
             {
                 mq.Host(serviceHost, host =>
                 {

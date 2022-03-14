@@ -1,4 +1,4 @@
-﻿namespace FileEventing.Service.Configuration;
+﻿namespace FileEventing.Shared.Configuration;
 
 public class BusOptions
 {
