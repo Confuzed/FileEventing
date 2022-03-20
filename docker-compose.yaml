@@ -14,9 +14,19 @@ services:
       context: .
       dockerfile: FileEventing.Monitor/Dockerfile
     image: fileeventing-monitor:latest
+    hostname: monitor-1
     depends_on:
       - mq
       - service
+    command:
+      - "wait-for-it"
+      - "-h"
+      - "mq"
+      - "-p"
+      - "5572"
+      - "--"
+      - "dotnet"
+      - "/app/FileEventing.Monitor.dll"
     environment:
       FILEEVENTING_BUS__HOST: mq
       FILEEVENTING_BUS__USER: mrrabbit
@@ -28,8 +38,18 @@ services:
       context: .
       dockerfile: FileEventing.Service/Dockerfile
     image: fileeventing-service:latest
+    hostname: service-1
     depends_on:
       - mq
+    command:
+      - "wait-for-it"
+      - "-h"
+      - "mq"
+      - "-p"
+      - "5572"
+      - "--"
+      - "dotnet"
+      - "/app/FileEventing.Service.dll"
     environment:
       FILEEVENTING_BUS__HOST: mq
       FILEEVENTING_BUS__USER: mrrabbit
