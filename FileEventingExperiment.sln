@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{CB784E
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileEventing.Abstractions", "FileEventing.Abstractions\FileEventing.Abstractions.csproj", "{D64818B1-194E-4ED4-8FCA-DB0ABCFC5EE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileEventing.Contract", "FileEventing.Contract\FileEventing.Contract.csproj", "{D64818B1-194E-4ED4-8FCA-DB0ABCFC5EE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileEventing.Shared.Configuration", "FileEventing.Shared.Configuration\FileEventing.Shared.Configuration.csproj", "{07E4458F-566A-45C9-B3C4-4CF7DA33306F}"
 EndProject

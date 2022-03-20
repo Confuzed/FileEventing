@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileEventing.Abstractions\FileEventing.Abstractions.csproj" />
+    <ProjectReference Include="..\FileEventing.Contract\FileEventing.Contract.csproj" />
     <ProjectReference Include="..\FileEventing.Shared.Configuration\FileEventing.Shared.Configuration.csproj" />
   </ItemGroup>
 

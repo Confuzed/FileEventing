@@ -2,13 +2,13 @@
 
 COPY FileEventing.Monitor/FileEventing.Monitor.csproj /app/FileEventing.Monitor/
 COPY FileEventing.Shared.Configuration/FileEventing.Shared.Configuration.csproj /app/FileEventing.Shared.Configuration/
-COPY FileEventing.Abstractions/FileEventing.Abstractions.csproj /app/FileEventing.Abstractions/
+COPY FileEventing.Contract/FileEventing.Contract.csproj /app/FileEventing.Contract/
 WORKDIR /app/FileEventing.Monitor
 RUN dotnet restore
 
 COPY FileEventing.Monitor /app/FileEventing.Monitor/
 COPY FileEventing.Shared.Configuration/ /app/FileEventing.Shared.Configuration/
-COPY FileEventing.Abstractions/ /app/FileEventing.Abstractions/
+COPY FileEventing.Contract/ /app/FileEventing.Contract/
 RUN dotnet publish --configuration Release -o out
 
 FROM mcr.microsoft.com/dotnet/runtime:6.0
