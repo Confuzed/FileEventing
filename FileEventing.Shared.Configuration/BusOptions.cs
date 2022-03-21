@@ -1,4 +1,6 @@
-﻿namespace FileEventing.Shared.Configuration;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FileEventing.Shared.Configuration;
 
 public class BusOptions
 {

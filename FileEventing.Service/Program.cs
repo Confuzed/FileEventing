@@ -1,29 +1,47 @@
 ﻿using FileEventing.Contract;
+using FileEventing.Service;
 using FileEventing.Service.Events.FileModifiedEvent;
 using FileEventing.Service.Events.FileUpsertRequest;
 using FileEventing.Shared.Configuration;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
-await Host.CreateDefaultBuilder(args)
+await CreateHostBuilder(args).RunConsoleAsync();
+
+static IHostBuilder CreateHostBuilder(string[] args) =>
+    Host.CreateDefaultBuilder(args)
     .ConfigureHostConfiguration(config =>
     {
         // ReSharper disable once StringLiteralTypo
-        config.AddEnvironmentVariables("FILEEVENTING_");
+        config.AddEnvironmentVariables("FileEventing_");
+    })
+    .ConfigureAppConfiguration((builder, config) =>
+    {
+        var environment = builder.HostingEnvironment.EnvironmentName
+            ?? "Development";
+
+        config
+            .AddJsonFile("appsettings.json", optional: true)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true)
+            .AddEnvironmentVariables(ConfigurationNames.EnvironmentConfigurationPrefix)
+            .AddCommandLine(args);
     })
     .ConfigureServices((configContext, services) =>
     {
-        var serviceOptions = configContext.Configuration
-            .GetRequiredSection(BusOptions.ConfigurationSectionName)
-            .Get<BusOptions>();
+        services
+            .AddOptions<BusOptions>()
+            .Bind(configContext.Configuration
+                .GetSection(BusOptions.ConfigurationSectionName))
+            .ValidateDataAnnotations();
 
-        var serviceHost = serviceOptions.Host
-                          ?? throw new InvalidOperationException("Configuration missing service host");
-        var serviceUser = serviceOptions.User
-                          ?? throw new InvalidOperationException("Configuration missing service user");
-        var servicePassword = serviceOptions.Password
-                              ?? throw new InvalidOperationException("Configuration missing service password");
+        var fileDbConnectionString = configContext.Configuration.GetConnectionString("Files");
+        if (string.IsNullOrWhiteSpace(fileDbConnectionString))
+            throw new InvalidOperationException("File data connection string missing from configuration");
+
+        services.AddSqlServer<FileDataContext>(fileDbConnectionString);
 
         services.AddMassTransit(mt =>
         {
@@ -36,12 +54,14 @@ await Host.CreateDefaultBuilder(args)
 
             mt.UsingRabbitMq((ctx, mq) =>
             {
-                mq.Host(serviceHost, host =>
-                {
-                    host.Username(serviceUser);
-                    host.Password(servicePassword);
-                });
+                var mqBusOptions = ctx.GetRequiredService<IOptions<BusOptions>>();
                 
+                mq.Host(mqBusOptions.Value.Host, host =>
+                {
+                    host.Username(mqBusOptions.Value.User);
+                    host.Password(mqBusOptions.Value.Password);
+                });
+
                 mq.ReceiveEndpoint("file-events", e =>
                 {
                     e.ConfigureConsumer<StoreModifiedFileEventConsumer<IFileChangedEvent>>(ctx);
@@ -51,10 +71,9 @@ await Host.CreateDefaultBuilder(args)
                     e.ConfigureConsumer<UpsertFileRecordConsumer>(ctx);
                 });
             });
-            
+
             mt.AddRequestClient<IUpsertFileRequest>();
         });
 
         services.AddMassTransitHostedService();
-    })
-    .RunConsoleAsync();
+    });

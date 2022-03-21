@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "FileEventing.Service": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "FileEventing_ConnectionStrings__Files": "Server=sql; Database=FileEventing; User Id=sa; Password: SQL_dev_Secret-987!",
+        "FileEventing_Bus__Host": "mq",
+        "FileEventing_Bus__User": "mrrabbit",
+        "FileEventing_Bus__Password": "R@bbit-987!"
+      }
+    }
+  }
+}
