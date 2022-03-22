@@ -76,4 +76,5 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         });
 
         services.AddMassTransitHostedService();
+        services.AddHostedService<DatabaseMaintenanceService>();
     });

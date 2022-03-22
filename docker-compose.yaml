@@ -4,6 +4,8 @@ services:
   sql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     hostname: sql
+    ports:
+      - 1433:1433
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: SQL_dev_Secret-987!
@@ -60,7 +62,7 @@ services:
       - "dotnet"
       - "/app/FileEventing.Service.dll"
     environment:
-      FILEEVENTING_ConnectionStrings__Files: "Server=sql; Database=FileEventing; User Id=sa; Password: SQL_dev_Secret-987!"
+      FILEEVENTING_ConnectionStrings__Files: "Server=sql; Database=FileEventing; User Id=sa; Password=SQL_dev_Secret-987!"
       FILEEVENTING_BUS__HOST: mq
       FILEEVENTING_BUS__USER: mrrabbit
       FILEEVENTING_BUS__PASSWORD: R@bbit-987!
