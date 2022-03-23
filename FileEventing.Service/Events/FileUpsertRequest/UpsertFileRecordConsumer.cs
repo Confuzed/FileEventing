@@ -33,7 +33,7 @@ public class UpsertFileRecordConsumer : IConsumer<IUpsertFileRequest>
                 var entry = await _fileDataContext.Files.AddAsync(new Model.File
                 {
                     Host = message.Host,
-                    Path = message.Path,
+                    Path = message.NewPath ?? message.Path,
                 });
 
                 await _fileDataContext.SaveChangesAsync();
@@ -49,6 +49,12 @@ public class UpsertFileRecordConsumer : IConsumer<IUpsertFileRequest>
 
             if (file == null)
                 throw new InvalidOperationException("Unable to upsert file");
+        }
+        else if (message.NewPath != null)
+        {
+            file.Path = message.NewPath;
+            _fileDataContext.Files.Update(file);
+            await _fileDataContext.SaveChangesAsync();
         }
 
         if (context.IsResponseAccepted<IUpsertFileResult>())

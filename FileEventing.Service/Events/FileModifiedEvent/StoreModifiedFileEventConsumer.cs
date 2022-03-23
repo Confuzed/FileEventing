@@ -31,13 +31,13 @@ public class StoreModifiedFileEventConsumer<TFileEvent> : IConsumer<TFileEvent>
 
         var fileId = await InsertOrUpdateFileReturningId(fileEvent);
 
-        await InsertFileEvent(fileEvent);
+        await InsertFileEvent(fileEvent, fileId);
     }
 
     private async Task<int> InsertOrUpdateFileReturningId(TFileEvent fileEvent)
     {
         var upsertResult = await _upsertFileRequestClient.GetResponse<IUpsertFileResult>(
-            new UpsertFileRequest(fileEvent.Host, fileEvent.Path));
+            BuildUpsertRequest(fileEvent));
 
         if (!upsertResult.Message.Succeeded)
         {
@@ -51,9 +51,17 @@ public class StoreModifiedFileEventConsumer<TFileEvent> : IConsumer<TFileEvent>
         return upsertResult.Message.FileId;
     }
 
-    private async Task InsertFileEvent(TFileEvent fileEvent)
+    private async Task InsertFileEvent(TFileEvent fileEvent, int fileId)
     {
-        _logger.LogInformation("Commiting file modification data");
+        _logger.LogInformation("Commiting file modification data for file Id({FileId})", fileId);
         await Task.Delay(250);
     }
+
+    private UpsertFileRequest BuildUpsertRequest(TFileEvent fileEvent) =>
+        fileEvent switch
+        {
+            IFileRenamedEvent renamedFile => new UpsertFileRequest(renamedFile.Host, renamedFile.OriginalPath, renamedFile.Path),
+            _ => new UpsertFileRequest(fileEvent.Host, fileEvent.Path, null)
+        };
+
 }

@@ -2,6 +2,9 @@
 
 namespace FileEventing.Service.Events.FileUpsertRequest;
 
-public interface IUpsertFileRequest : IFileEvent {}
+public interface IUpsertFileRequest : IFileEvent
+{
+    string? NewPath { get; }
+}
 
-public sealed record UpsertFileRequest(string Host, string Path) : IUpsertFileRequest;
+public sealed record UpsertFileRequest(string Host, string Path, string? NewPath) : IUpsertFileRequest;
