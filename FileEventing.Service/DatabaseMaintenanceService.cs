@@ -1,18 +1,21 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FileEventing.Service;
 
 public class DatabaseMaintenanceService : BackgroundService
 {
-    private readonly FileDataContext _fileData;
+    private readonly IServiceProvider _serviceProvider;
 
-    public DatabaseMaintenanceService(FileDataContext fileData)
+    public DatabaseMaintenanceService(IServiceProvider serviceProvider)
     {
-        _fileData = fileData;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await _fileData.Database.EnsureCreatedAsync(stoppingToken);
+        using var scope = _serviceProvider.CreateScope();
+        var fileDataContext = scope.ServiceProvider.GetRequiredService<FileDataContext>();
+        await fileDataContext.Database.EnsureCreatedAsync(stoppingToken);
     }
 }

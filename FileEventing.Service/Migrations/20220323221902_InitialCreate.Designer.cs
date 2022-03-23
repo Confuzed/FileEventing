@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileEventing.Service.Migrations
 {
     [DbContext(typeof(FileDataContext))]
-    [Migration("20220322142622_InitialCreate")]
+    [Migration("20220323221902_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,13 +33,16 @@ namespace FileEventing.Service.Migrations
 
                     b.Property<string>("Host")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Host", "Path")
+                        .IsUnique();
 
                     b.ToTable("Files");
                 });

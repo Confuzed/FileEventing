@@ -14,13 +14,19 @@ namespace FileEventing.Service.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Host = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Host = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Path = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_Host_Path",
+                table: "Files",
+                columns: new[] { "Host", "Path" },
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

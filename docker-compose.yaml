@@ -13,12 +13,14 @@ services:
       
     
   mq:
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     hostname: mq
     environment:
       RABBITMQ_DEFAULT_USER: mrrabbit
       RABBITMQ_DEFAULT_PASS: R@bbit-987!
     restart: unless-stopped
+    ports:
+      - 15672:15672
     
   monitor:
     build:

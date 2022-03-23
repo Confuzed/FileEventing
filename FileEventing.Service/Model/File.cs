@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace FileEventing.Service.Model;
 
+[Index(nameof(File.Host), nameof(File.Path), IsUnique = true)]
 public class File
 {
     [Key]
