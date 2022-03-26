@@ -17,4 +17,6 @@ RUN apt update && apt install -y wait-for-it && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY --from=build /app/FileEventing.Monitor/out .
+COPY FileEventing.Monitor/fe-start-test.sh /app
+RUN chmod +x /app/fe-start-test.sh
 CMD ["dotnet", "FileEventing.Monitor.dll"]
