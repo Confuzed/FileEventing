@@ -1,7 +1,10 @@
 ﻿using FileEventing.Contract;
 using FileEventing.Service;
+using FileEventing.Service.Configuration;
+using FileEventing.Service.Data;
 using FileEventing.Service.Events.FileModifiedEvent;
 using FileEventing.Service.Events.FileUpsertRequest;
+using FileEventing.Service.EventStorage;
 using FileEventing.Shared.Configuration;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +38,11 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
             .AddOptions<BusOptions>()
             .Bind(configContext.Configuration
                 .GetSection(BusOptions.ConfigurationSectionName))
+            .ValidateDataAnnotations();
+
+        services
+            .AddOptions<InfluxDbOptions>()
+            .BindConfiguration(InfluxDbOptions.SectionName)
             .ValidateDataAnnotations();
 
         var fileDbConnectionString = configContext.Configuration.GetConnectionString("Files");
@@ -75,6 +83,8 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
             mt.AddRequestClient<IUpsertFileRequest>();
         });
 
+        services.AddSingleton<IFileEventWriter, InfluxDbFileEventWriter>();
+        
         services.AddMassTransitHostedService();
         services.AddHostedService<DatabaseMaintenanceService>();
     });

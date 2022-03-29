@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using File = FileEventing.Service.Data.Entities.File;
 
-namespace FileEventing.Service;
+namespace FileEventing.Service.Data;
 
 public class FileDataContext : DbContext
 {
@@ -8,5 +9,5 @@ public class FileDataContext : DbContext
         : base(options)
     {}
 
-    public DbSet<Model.File> Files { get; set; } = null!;
+    public DbSet<File> Files { get; set; } = null!;
 }

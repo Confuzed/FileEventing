@@ -6,11 +6,25 @@ services:
     hostname: sql
     ports:
       - 1433:1433
+    restart: unless-stopped
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: SQL_dev_Secret-987!
       MSSQL_PID: Developer
       
+  influxdb:
+    image: influxdb:2.1
+    hostname: influxdb
+    ports:
+      - 8086:8086
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_ORG: Confuzed
+      DOCKER_INFLUXDB_INIT_USERNAME: influx
+      DOCKER_INFLUXDB_INIT_PASSWORD: InfluxPassword-987!
+      DOCKER_INFLUXDB_INIT_BUCKET: FileEvents
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: InfluxAdminToken987
     
   mq:
     image: rabbitmq:3-management
@@ -31,6 +45,7 @@ services:
     depends_on:
       - mq
       - service
+    restart: unless-stopped
     command:
       - "wait-for-it"
       - "-h"
@@ -54,6 +69,9 @@ services:
     hostname: service-1
     depends_on:
       - mq
+      - sql
+      - influxdb
+    restart: unless-stopped
     command:
       - "wait-for-it"
       - "-h"
