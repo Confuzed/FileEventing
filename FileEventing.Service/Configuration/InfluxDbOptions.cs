@@ -11,4 +11,7 @@ public class InfluxDbOptions
 
     [Required]
     public string Token { get; set; } = string.Empty;
+
+    [Required]
+    public string Bucket { get; set; } = string.Empty;
 }

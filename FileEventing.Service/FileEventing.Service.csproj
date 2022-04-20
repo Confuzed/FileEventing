@@ -12,14 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Hashids.net" Version="1.4.1" />
     <PackageReference Include="InfluxDB.Client" Version="4.0.0" />
-    <PackageReference Include="MassTransit.Analyzers" Version="7.3.1" />
-    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="MassTransit.Analyzers" Version="8.0.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
@@ -34,6 +28,10 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions" />
   </ItemGroup>
 
 </Project>

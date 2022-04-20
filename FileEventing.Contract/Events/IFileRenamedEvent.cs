@@ -1,4 +1,4 @@
-﻿namespace FileEventing.Contract;
+﻿namespace FileEventing.Contract.Events;
 
 public interface IFileRenamedEvent : IFileEvent
 {

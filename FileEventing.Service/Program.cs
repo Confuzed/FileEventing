@@ -1,10 +1,9 @@
-﻿using FileEventing.Contract;
-using FileEventing.Service;
-using FileEventing.Service.Configuration;
+﻿using FileEventing.Service.Configuration;
 using FileEventing.Service.Data;
-using FileEventing.Service.Events.FileModifiedEvent;
-using FileEventing.Service.Events.FileUpsertRequest;
-using FileEventing.Service.EventStorage;
+using FileEventing.Service.Events.FileChanged;
+using FileEventing.Service.Events.FileCreated;
+using FileEventing.Service.Events.FileDeleted;
+using FileEventing.Service.Events.FileRenamed;
 using FileEventing.Shared.Configuration;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -45,20 +44,12 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
             .BindConfiguration(InfluxDbOptions.SectionName)
             .ValidateDataAnnotations();
 
-        var fileDbConnectionString = configContext.Configuration.GetConnectionString("Files");
-        if (string.IsNullOrWhiteSpace(fileDbConnectionString))
-            throw new InvalidOperationException("File data connection string missing from configuration");
-
-        services.AddSqlServer<FileDataContext>(fileDbConnectionString);
-
         services.AddMassTransit(mt =>
         {
-            mt.AddConsumer<StoreModifiedFileEventConsumer<IFileChangedEvent>>();
-            mt.AddConsumer<StoreModifiedFileEventConsumer<IFileCreatedEvent>>();
-            mt.AddConsumer<StoreModifiedFileEventConsumer<IFileDeletedEvent>>();
-            mt.AddConsumer<StoreModifiedFileEventConsumer<IFileRenamedEvent>>();
-
-            mt.AddConsumer<UpsertFileRecordConsumer>();
+            mt.AddConsumer<FileChangedEventConsumer>();
+            mt.AddConsumer<FileCreatedEventConsumer>();
+            mt.AddConsumer<FileDeletedEventConsumer>();
+            mt.AddConsumer<FileRenamedEventConsumer>();
 
             mt.UsingRabbitMq((ctx, mq) =>
             {
@@ -72,19 +63,13 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
 
                 mq.ReceiveEndpoint("file-events", e =>
                 {
-                    e.ConfigureConsumer<StoreModifiedFileEventConsumer<IFileChangedEvent>>(ctx);
-                    e.ConfigureConsumer<StoreModifiedFileEventConsumer<IFileCreatedEvent>>(ctx);
-                    e.ConfigureConsumer<StoreModifiedFileEventConsumer<IFileDeletedEvent>>(ctx);
-                    e.ConfigureConsumer<StoreModifiedFileEventConsumer<IFileRenamedEvent>>(ctx);
-                    e.ConfigureConsumer<UpsertFileRecordConsumer>(ctx);
+                    e.ConfigureConsumer<FileChangedEventConsumer>(ctx);
+                    e.ConfigureConsumer<FileCreatedEventConsumer>(ctx);
+                    e.ConfigureConsumer<FileDeletedEventConsumer>(ctx);
+                    e.ConfigureConsumer<FileRenamedEventConsumer>(ctx);
                 });
             });
-
-            mt.AddRequestClient<IUpsertFileRequest>();
         });
 
         services.AddSingleton<IFileEventWriter, InfluxDbFileEventWriter>();
-        
-        services.AddMassTransitHostedService();
-        services.AddHostedService<DatabaseMaintenanceService>();
     });
