@@ -10,7 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{CB784EE2-02D2-4613-A021-CE7BE5B73CC0}"
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
-		docker-compose.yaml = docker-compose.yaml
+		Docker\docker-compose.all-local.yaml = Docker\docker-compose.all-local.yaml
+		Docker\docker-compose.yaml = Docker\docker-compose.yaml
+		Docker\dc.sh = Docker\dc.sh
+		Docker\env.sample = Docker\env.sample
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileEventing.Contract", "FileEventing.Contract\FileEventing.Contract.csproj", "{D64818B1-194E-4ED4-8FCA-DB0ABCFC5EE7}"

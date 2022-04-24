@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using FileEventing.Contract.Events;
 using FileEventing.Service.Data;
-using FileEventing.Service.Data.Model;
+using FileEventing.Service.Data.Measurements;
+using FileEventing.Service.Measurements;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +12,11 @@ namespace FileEventing.Service.Events.FileRenamed;
 public class FileRenamedEventConsumer : IConsumer<IFileRenamedEvent>
 {
     private readonly ILogger<FileRenamedEventConsumer> _logger;
-    private readonly IFileEventWriter _eventWriter;
+    private readonly IMeasurementWriter _eventWriter;
 
     public FileRenamedEventConsumer(
         ILogger<FileRenamedEventConsumer> logger,
-        IFileEventWriter eventWriter)
+        IMeasurementWriter eventWriter)
     {
         _logger = logger;
         _eventWriter = eventWriter;
@@ -32,7 +33,7 @@ public class FileRenamedEventConsumer : IConsumer<IFileRenamedEvent>
             fileEvent.Path);
 
         await _eventWriter.WriteAsync(
-            new File(fileEvent.Host, fileEvent.Path, EventType.Renamed)
+            new FileSizeMeasurement(fileEvent.Host, fileEvent.Path, EventType.Renamed, fileEvent.Length)
             {
                 PreviousPath = fileEvent.OriginalPath,
             },

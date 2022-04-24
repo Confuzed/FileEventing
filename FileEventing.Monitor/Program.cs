@@ -37,6 +37,7 @@ await Host.CreateDefaultBuilder(args)
         });
 
         services.AddMassTransitHostedService();
+        services.AddSingleton<IFileAccess, FileEventing.Monitor.FileAccess>();
         services.AddHostedService<MonitoringService>();
     })
     .RunConsoleAsync();

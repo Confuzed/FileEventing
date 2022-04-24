@@ -1,4 +1,4 @@
-namespace FileEventing.Service.Data.Model;
+namespace FileEventing.Service.Data.Measurements;
 
 public enum EventType
 {

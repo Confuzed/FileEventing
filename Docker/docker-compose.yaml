@@ -1,5 +1,8 @@
 ﻿version: "3.9"
 
+volumes:
+  grafana-storage:
+
 services:
   influxdb:
     image: influxdb:2.1
@@ -10,8 +13,8 @@ services:
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
       DOCKER_INFLUXDB_INIT_ORG: Confuzed
-      DOCKER_INFLUXDB_INIT_USERNAME: influx
-      DOCKER_INFLUXDB_INIT_PASSWORD: InfluxPassword-987!
+      DOCKER_INFLUXDB_INIT_USERNAME: rob
+      DOCKER_INFLUXDB_INIT_PASSWORD: Password123
       DOCKER_INFLUXDB_INIT_BUCKET: FileEvents
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: InfluxAdminToken987
     
@@ -24,3 +27,16 @@ services:
     restart: unless-stopped
     ports:
       - 15672:15672
+        
+  grafana:
+    image: grafana/grafana-oss:latest
+    hostname: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+    

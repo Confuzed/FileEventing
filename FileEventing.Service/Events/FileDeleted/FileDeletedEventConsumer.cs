@@ -1,27 +1,25 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FileEventing.Contract.Events;
-using FileEventing.Service.Data;
-using FileEventing.Service.Data.Model;
+using FileEventing.Service.Measurements;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace FileEventing.Service.Events.FileDeleted;
 
-public class FileDeletedEventConsumer : IConsumer<IFileChangedEvent>
+public class FileDeletedEventConsumer : IConsumer<IFileDeletedEvent>
 {
     private readonly ILogger<FileDeletedEventConsumer> _logger;
-    private readonly IFileEventWriter _eventWriter;
+    private readonly IMeasurementWriter _eventWriter;
 
     public FileDeletedEventConsumer(
         ILogger<FileDeletedEventConsumer> logger,
-        IFileEventWriter eventWriter)
+        IMeasurementWriter eventWriter)
     {
         _logger = logger;
         _eventWriter = eventWriter;
     }
     
-    public async Task Consume(ConsumeContext<IFileChangedEvent> context)
+    public Task Consume(ConsumeContext<IFileDeletedEvent> context)
     {
         var fileEvent = context.Message;
         
@@ -29,12 +27,7 @@ public class FileDeletedEventConsumer : IConsumer<IFileChangedEvent>
             fileEvent.Host,
             fileEvent.Path);
 
-        await _eventWriter.WriteAsync(
-            new File(fileEvent.Host, fileEvent.Path, EventType.Deleted)
-            {
-                Size = 0,
-            },
-            context.CancellationToken);
+        return Task.CompletedTask;
     }
 
 }

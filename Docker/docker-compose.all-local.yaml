@@ -3,7 +3,7 @@ version: "3.9"
 services:
   monitor:
     build:
-      context: .
+      context: ../.
       dockerfile: FileEventing.Monitor/Dockerfile
     image: fileeventing-monitor:latest
     hostname: monitor-1
@@ -27,7 +27,7 @@ services:
   
   service:
     build:
-      context: .
+      context: ../.
       dockerfile: FileEventing.Service/Dockerfile
     image: fileeventing-service:latest
     hostname: service-1
@@ -49,3 +49,8 @@ services:
       FILEEVENTING_BUS__HOST: mq
       FILEEVENTING_BUS__USER: mrrabbit
       FILEEVENTING_BUS__PASSWORD: R@bbit-987!
+      FILEEVENTING_INFLUXDB__TOKEN: InfluxAdminToken987
+      FILEEVENTING_INFLUXDB__BUCKET: FileEvents
+      FILEEVENTING_INFLUXDB__SERVICEURI: http://influxdb:8086
+      FILEEVENTING_INFLUXDB__ORGANISATION: Confuzed
+      

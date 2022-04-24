@@ -1,9 +1,11 @@
-﻿using FileEventing.Service.Configuration;
+﻿using FileEventing.Service;
 using FileEventing.Service.Data;
+using FileEventing.Service.Data.InfluxDb;
 using FileEventing.Service.Events.FileChanged;
 using FileEventing.Service.Events.FileCreated;
 using FileEventing.Service.Events.FileDeleted;
 using FileEventing.Service.Events.FileRenamed;
+using FileEventing.Service.Measurements;
 using FileEventing.Shared.Configuration;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -71,5 +73,5 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
             });
         });
 
-        services.AddSingleton<IFileEventWriter, InfluxDbFileEventWriter>();
+        services.AddSingleton<IMeasurementWriter, InfluxDbMeasurementWriter>();
     });

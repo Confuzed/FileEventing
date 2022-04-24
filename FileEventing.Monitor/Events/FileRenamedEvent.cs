@@ -1,6 +1,5 @@
-﻿using FileEventing.Contract;
-using FileEventing.Contract.Events;
+﻿using FileEventing.Contract.Events;
 
 namespace FileEventing.Monitor.Events;
 
-public sealed record FileRenamedEvent(string Host, string Path, string OriginalPath) : IFileRenamedEvent;
+public sealed record FileRenamedEvent(string Host, string Path, string OriginalPath, long Length) : IFileRenamedEvent;

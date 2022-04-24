@@ -1,3 +1,3 @@
 ﻿namespace FileEventing.Contract.Events;
 
-public interface IFileCreatedEvent : IFileEvent {}
+public interface IFileCreatedEvent : IFileSizeEvent {}

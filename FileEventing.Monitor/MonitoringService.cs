@@ -11,11 +11,13 @@ public class MonitoringService : BackgroundService
 {
     private readonly ILogger<MonitoringService> _logger;
     private readonly IBus _bus;
+    private readonly IFileAccess _fileAccess;
 
-    public MonitoringService(ILogger<MonitoringService> logger, IBus bus)
+    public MonitoringService(ILogger<MonitoringService> logger, IBus bus, IFileAccess fileAccess)
     {
         _logger = logger;
         _bus = bus;
+        _fileAccess = fileAccess;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -53,7 +55,10 @@ public class MonitoringService : BackgroundService
         _logger.LogInformation("File [{ChangedFilePath}] changed", e.FullPath);
         
 #pragma warning disable MTA0001
-        _bus.Publish(new FileChangedEvent(GetHostName(), e.FullPath));
+        _bus.Publish(new FileChangedEvent(
+            GetHostName(),
+            e.FullPath,
+            _fileAccess.GetLength(e.FullPath)));
 #pragma warning restore MTA0001
     }
 
@@ -62,7 +67,10 @@ public class MonitoringService : BackgroundService
         _logger.LogInformation("File [{ChangedFilePath}] created", e.FullPath);
         
 #pragma warning disable MTA0001
-        _bus.Publish(new FileCreatedEvent(GetHostName(), e.FullPath));
+        _bus.Publish(new FileCreatedEvent(
+            GetHostName(),
+            e.FullPath,
+            _fileAccess.GetLength(e.FullPath)));
 #pragma warning restore MTA0001
     }
 
@@ -81,7 +89,11 @@ public class MonitoringService : BackgroundService
         _logger.LogInformation("File [{ChangedFilePath}] renamed to [{NewFilePath}]", renamed.OldFullPath, renamed.FullPath);
         
 #pragma warning disable MTA0001
-        _bus.Publish(new FileRenamedEvent(GetHostName(), renamed.OldFullPath, renamed.FullPath));
+        _bus.Publish(new FileRenamedEvent(
+            GetHostName(),
+            renamed.OldFullPath,
+            renamed.FullPath,
+            _fileAccess.GetLength(renamed.FullPath)));
 #pragma warning restore MTA0001
     }
     
