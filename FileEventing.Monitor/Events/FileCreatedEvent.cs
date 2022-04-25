@@ -3,4 +3,4 @@ using FileEventing.Contract.Events;
 
 namespace FileEventing.Monitor.Events;
 
-public record FileCreatedEvent(string Host, string Path, long Length) : IFileCreatedEvent;
+public record FileCreatedEvent(string Host, string Path) : IFileCreatedEvent;

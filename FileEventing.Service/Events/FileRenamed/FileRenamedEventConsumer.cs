@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FileEventing.Contract.Events;
-using FileEventing.Service.Data;
-using FileEventing.Service.Data.Measurements;
 using FileEventing.Service.Measurements;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -22,7 +19,7 @@ public class FileRenamedEventConsumer : IConsumer<IFileRenamedEvent>
         _eventWriter = eventWriter;
     }
     
-    public async Task Consume(ConsumeContext<IFileRenamedEvent> context)
+    public Task Consume(ConsumeContext<IFileRenamedEvent> context)
     {
         var fileEvent = context.Message;
         
@@ -32,12 +29,7 @@ public class FileRenamedEventConsumer : IConsumer<IFileRenamedEvent>
             fileEvent.OriginalPath,
             fileEvent.Path);
 
-        await _eventWriter.WriteAsync(
-            new FileSizeMeasurement(fileEvent.Host, fileEvent.Path, EventType.Renamed, fileEvent.Length)
-            {
-                PreviousPath = fileEvent.OriginalPath,
-            },
-            context.CancellationToken);
+        return Task.CompletedTask;
     }
 
 }

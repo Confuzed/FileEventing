@@ -21,7 +21,7 @@ public class FileCreatedEventConsumer : IConsumer<IFileCreatedEvent>
         _eventWriter = eventWriter;
     }
     
-    public async Task Consume(ConsumeContext<IFileCreatedEvent> context)
+    public Task Consume(ConsumeContext<IFileCreatedEvent> context)
     {
         var fileEvent = context.Message;
         
@@ -29,8 +29,6 @@ public class FileCreatedEventConsumer : IConsumer<IFileCreatedEvent>
             fileEvent.Host,
             fileEvent.Path);
         
-        await _eventWriter.WriteAsync(
-            new FileSizeMeasurement(fileEvent.Host, fileEvent.Path, EventType.Created, fileEvent.Length),
-            context.CancellationToken);
+        return Task.CompletedTask;
     }
 }

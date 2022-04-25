@@ -2,4 +2,4 @@
 
 namespace FileEventing.Monitor.Events;
 
-public sealed record FileChangedEvent(string Host, string Path, long Length) : IFileChangedEvent;
+public sealed record FileChangedEvent(string Host, string Path) : IFileChangedEvent;

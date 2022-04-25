@@ -1,9 +1,6 @@
-﻿using System.Net;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using FileEventing.Monitor.Events;
 
 namespace FileEventing.Monitor;
 
@@ -50,57 +47,33 @@ public class MonitoringService : BackgroundService
         _logger.LogInformation($"Exiting {nameof(MonitoringService)}");
     }
 
-    private void OnFileChanged(object sender, FileSystemEventArgs e)
+    private async void OnFileChanged(object sender, FileSystemEventArgs e)
     {
         _logger.LogInformation("File [{ChangedFilePath}] changed", e.FullPath);
-        
-#pragma warning disable MTA0001
-        _bus.Publish(new FileChangedEvent(
-            GetHostName(),
-            e.FullPath,
-            _fileAccess.GetLength(e.FullPath)));
-#pragma warning restore MTA0001
+        await _bus.PublishFileChanged(e.FullPath, _fileAccess.GetLength(e.FullPath));
     }
 
-    private void OnFileCreated(object sender, FileSystemEventArgs e)
+    private async void OnFileCreated(object sender, FileSystemEventArgs e)
     {
         _logger.LogInformation("File [{ChangedFilePath}] created", e.FullPath);
-        
-#pragma warning disable MTA0001
-        _bus.Publish(new FileCreatedEvent(
-            GetHostName(),
-            e.FullPath,
-            _fileAccess.GetLength(e.FullPath)));
-#pragma warning restore MTA0001
+        await _bus.PublishFileCreated(e.FullPath, _fileAccess.GetLength(e.FullPath));
     }
 
-    private void OnFileDeleted(object sender, FileSystemEventArgs e)
+    private async void OnFileDeleted(object sender, FileSystemEventArgs e)
     {
         _logger.LogInformation("File [{ChangedFilePath}] deleted", e.FullPath);
-        
-#pragma warning disable MTA0001
-        _bus.Publish(new FileDeletedEvent(GetHostName(), e.FullPath));
-#pragma warning restore MTA0001
+        await _bus.PublishFileDeleted(e.FullPath);
     }
     
-    private void OnFileRenamed(object sender, FileSystemEventArgs e)
+    private async void OnFileRenamed(object sender, FileSystemEventArgs e)
     {
         var renamed = e as RenamedEventArgs ?? throw new InvalidCastException($"Cannot cast event to {nameof(RenamedEventArgs)}");
         _logger.LogInformation("File [{ChangedFilePath}] renamed to [{NewFilePath}]", renamed.OldFullPath, renamed.FullPath);
-        
-#pragma warning disable MTA0001
-        _bus.Publish(new FileRenamedEvent(
-            GetHostName(),
-            renamed.OldFullPath,
-            renamed.FullPath,
-            _fileAccess.GetLength(renamed.FullPath)));
-#pragma warning restore MTA0001
+        await _bus.PublishFileRenamed(renamed.OldFullPath, renamed.FullPath);
     }
     
     private void OnError(object sender, ErrorEventArgs e)
     {
-        _logger.LogError(e.GetException(), "Watcher exception");
+        _logger.LogError(e.GetException(), "Monitor exception");
     }
-
-    private static string GetHostName() => Dns.GetHostName();
 }

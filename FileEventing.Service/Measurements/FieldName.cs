@@ -1,4 +1,4 @@
-namespace FileEventing.Service.Data.Measurements;
+namespace FileEventing.Service.Measurements;
 
 public static class FieldName
 {

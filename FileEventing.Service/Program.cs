@@ -5,6 +5,7 @@ using FileEventing.Service.Events.FileChanged;
 using FileEventing.Service.Events.FileCreated;
 using FileEventing.Service.Events.FileDeleted;
 using FileEventing.Service.Events.FileRenamed;
+using FileEventing.Service.Events.FileSize;
 using FileEventing.Service.Measurements;
 using FileEventing.Shared.Configuration;
 using MassTransit;
@@ -52,6 +53,7 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
             mt.AddConsumer<FileCreatedEventConsumer>();
             mt.AddConsumer<FileDeletedEventConsumer>();
             mt.AddConsumer<FileRenamedEventConsumer>();
+            mt.AddConsumer<FileSizeEventConsumer>();
 
             mt.UsingRabbitMq((ctx, mq) =>
             {
@@ -69,6 +71,7 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
                     e.ConfigureConsumer<FileCreatedEventConsumer>(ctx);
                     e.ConfigureConsumer<FileDeletedEventConsumer>(ctx);
                     e.ConfigureConsumer<FileRenamedEventConsumer>(ctx);
+                    e.ConfigureConsumer<FileSizeEventConsumer>(ctx);
                 });
             });
         });

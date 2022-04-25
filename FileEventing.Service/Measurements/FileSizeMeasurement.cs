@@ -10,14 +10,17 @@ namespace FileEventing.Service.Measurements;
 [Measurement(MeasurementName.FileSize)]
 public class FileSizeMeasurement : FileMeasurement
 {
-    public FileSizeMeasurement(string host, string path, EventType updatedReason, long size)
-        : this(host, path, updatedReason, DateTime.UtcNow, size)
-    { }
-
-    public FileSizeMeasurement(string host, string path, EventType updatedReason, DateTime updated, long size)
-        : base(host, path, updatedReason, updated)
+    public FileSizeMeasurement(string host, string path, long size)
+        : base(host, path)
     {
         Size = size;
     }
-    [Column(FieldName.FileSize)] public long Size { get; set; } = 0;
+
+    public FileSizeMeasurement(string host, string path, DateTime updated, long size)
+        : base(host, path, updated)
+    {
+        Size = size;
+    }
+
+    [Column] public long Size { get; }
 }
